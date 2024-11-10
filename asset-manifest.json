@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/courser/static/css/main.78d4fe67.css",
-    "main.js": "/courser/static/js/main.aa56fa46.js",
+    "main.js": "/courser/static/js/main.072af030.js",
     "static/js/453.763e2ede.chunk.js": "/courser/static/js/453.763e2ede.chunk.js",
     "index.html": "/courser/index.html",
     "main.78d4fe67.css.map": "/courser/static/css/main.78d4fe67.css.map",
-    "main.aa56fa46.js.map": "/courser/static/js/main.aa56fa46.js.map",
+    "main.072af030.js.map": "/courser/static/js/main.072af030.js.map",
     "453.763e2ede.chunk.js.map": "/courser/static/js/453.763e2ede.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.78d4fe67.css",
-    "static/js/main.aa56fa46.js"
+    "static/js/main.072af030.js"
   ]
 }
