@@ -1,0 +1,38 @@
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 1px;
+    background-color: #494949;
+}
+
+.day-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333333;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.hour-label, .time-slot {
+    grid-row: span 6;
+}
+
+.hour-label {
+    display: flex;
+    grid-column: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: #242424;
+    font-size: 14px;
+    padding: 4px;
+}
+
+.time-slot {
+    background-color: #666666;
+}
+
+.event {
+    background-color: #4d4d4d;
+    z-index: 1;
+}
