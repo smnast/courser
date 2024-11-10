@@ -14,23 +14,39 @@ class Section {
     /** The time slots assigned to this section */
     timeSlots: Array<TimeSlot>;
 
+    /** Whether the course is an enrollment type (or non-enrollment) */
+    isEnrollment: boolean;
+
+    /** The associated enrollment section index for this class */
+    associatedClass: number;
+
     /**
      * Creates a new Section instance.
      *
-     * @param name - The name of the section (e.g., "Section A").
+     * @param name - The name of the section (e.g., "D100").
      * @param sectionType - The type of the section (e.g., "LEC").
      * @param timeSlots - The list of time slots associated with the section.
+     * @param isEnrollment - Whether the section is an enrollment type (or non-enrollment).
+     * @param associatedCLass - The associated enrollment section index for this class.
      */
-    constructor(name: string, sectionType: SectionType, timeSlots: Array<TimeSlot>) {
+    constructor(
+        name: string,
+        sectionType: SectionType,
+        timeSlots: Array<TimeSlot>,
+        isEnrollment: boolean,
+        associatedClass: number
+    ) {
         this.name = name;
         this.sectionType = sectionType;
         this.timeSlots = timeSlots;
+        this.isEnrollment = isEnrollment;
+        this.associatedClass = associatedClass;
     }
 
     /**
      * Returns a string representation of the Section.
      *
-     * @returns A string that includes the class name, section name, and a summary of the time slots.
+     * @returns A string that includes the section name and a summary of its time slots.
      */
     toString(): string {
         const timeSlotSummary = this.timeSlots

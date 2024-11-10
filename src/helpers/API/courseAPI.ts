@@ -1,7 +1,10 @@
 import axios from "axios";
 
 // Define the base URL
-const BASE_URL = "http://www.sfu.ca/bin/wcm/course-outlines";
+const BASE_URL = "https://www.sfu.ca/bin/wcm/course-outlines";
+
+// Define the type for the API response
+export type ApiResponse = Record<string, any>;
 
 /**
  * Utility function to build the API URL based on the provided parameters.
@@ -39,9 +42,9 @@ interface YearData {
 /**
  * Fetch the available years from the API.
  *
- * @returns {Promise<YearData[]>} The data response from the API containing the years.
+ * @returns {Promise<ApiResponse>} The data response from the API containing the years.
  */
-export const getYears = async (): Promise<YearData[]> => {
+export const getYears = async (): Promise<ApiResponse> => {
     try {
         const response = await axios.get<YearData[]>(BASE_URL);
         return response.data;
@@ -55,9 +58,9 @@ export const getYears = async (): Promise<YearData[]> => {
  * Fetch the available terms for a specific year.
  *
  * @param {string} year - The year to fetch terms for.
- * @returns {Promise<any>} The data response from the API containing the terms.
+ * @returns {Promise<ApiResponse>} The data response from the API containing the terms.
  */
-export const getTerms = async (year: string): Promise<any> => {
+export const getTerms = async (year: string): Promise<ApiResponse> => {
     try {
         const url = buildApiUrl(year);
         const response = await axios.get(url);
@@ -73,12 +76,12 @@ export const getTerms = async (year: string): Promise<any> => {
  *
  * @param {string} year - The year to fetch departments for.
  * @param {string} term - The term to fetch departments for.
- * @returns {Promise<any>} The data response from the API containing the departments.
+ * @returns {Promise<ApiResponse>} The data response from the API containing the departments.
  */
 export const getDepartments = async (
     year: string,
     term: string
-): Promise<any> => {
+): Promise<ApiResponse> => {
     try {
         const url = buildApiUrl(year, term);
         const response = await axios.get(url);
@@ -95,13 +98,13 @@ export const getDepartments = async (
  * @param {string} year - The year to fetch course numbers for.
  * @param {string} term - The term to fetch course numbers for.
  * @param {string} department - The department to fetch course numbers for.
- * @returns {Promise<any>} The data response from the API containing the course numbers.
+ * @returns {Promise<ApiResponse>} The data response from the API containing the course numbers.
  */
 export const getCourseNumbers = async (
     year: string,
     term: string,
     department: string
-): Promise<any> => {
+): Promise<ApiResponse> => {
     try {
         const url = buildApiUrl(year, term, department);
         const response = await axios.get(url);
@@ -122,14 +125,14 @@ export const getCourseNumbers = async (
  * @param {string} term - The term to fetch course sections for.
  * @param {string} department - The department to fetch course sections for.
  * @param {string} courseNumber - The course number to fetch sections for.
- * @returns {Promise<any>} The data response from the API containing the course sections.
+ * @returns {Promise<ApiResponse>} The data response from the API containing the course sections.
  */
 export const getCourseSections = async (
     year: string,
     term: string,
     department: string,
     courseNumber: string
-): Promise<any> => {
+): Promise<ApiResponse> => {
     try {
         const url = buildApiUrl(year, term, department, courseNumber);
         const response = await axios.get(url);
@@ -151,7 +154,7 @@ export const getCourseSections = async (
  * @param {string} department - The department to fetch the course outline for.
  * @param {string} courseNumber - The course number to fetch the outline for.
  * @param {string} courseSection - The course section to fetch the outline for.
- * @returns {Promise<any>} The data response from the API containing the course outline.
+ * @returns {Promise<ApiResponse>} The data response from the API containing the course outline.
  */
 export const getCourseOutline = async (
     year: string,
@@ -159,7 +162,7 @@ export const getCourseOutline = async (
     department: string,
     courseNumber: string,
     courseSection: string
-): Promise<any> => {
+): Promise<ApiResponse> => {
     try {
         const url = buildApiUrl(
             year,

@@ -3,9 +3,18 @@ enum SectionType {
     Lab = "LAB",
     Tutorial = "TUT",
     OpenLab = "OPL",
+    Online = "OLC",
 }
 
-export function stringToSectionType(sectionType: string): SectionType | undefined {
+/**
+ * Converts a string to a SectionType if it matches one of the SectionType values.
+ *
+ * @param sectionType - The string to convert to a SectionType.
+ * @returns The corresponding SectionType if the string matches a SectionType value, otherwise undefined.
+ */
+export function stringToSectionType(
+    sectionType: string
+): SectionType | undefined {
     if (Object.values(SectionType).includes(sectionType as SectionType)) {
         return sectionType as SectionType;
     }

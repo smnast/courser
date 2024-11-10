@@ -7,7 +7,7 @@ import { Dayjs } from "dayjs";
  */
 class TimeSlot {
     /** The campus where the time slot is located */
-    campus: Campus;
+    campus: Campus | null;
 
     /** The days of the week when the time slot occurs */
     days: WeekDay[];
@@ -39,7 +39,7 @@ class TimeSlot {
      * @param isExam - Indicates if the time slot is for an exam.
      */
     constructor(
-        campus: Campus,
+        campus: Campus | null,
         days: WeekDay[] = [],
         startTime: Dayjs,
         endTime: Dayjs,
@@ -65,7 +65,7 @@ class TimeSlot {
     toString(): string {
         return `${this.campus} ${this.days.join(
             ", "
-        )} ${this.startTime.toString()} - ${this.endTime.toString()}`;
+        )} ${this.startTime.format('HH:mm')} - ${this.endTime.format('HH:mm')}`;
     }
 }
 
