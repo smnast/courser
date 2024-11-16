@@ -151,6 +151,24 @@ class Course {
     }
 
     /**
+     * Determines if the current course overlaps with another course.
+     *
+     * This method checks if any section of the current course overlaps with any section
+     * of the provided course. It iterates through each section of the current course and
+     * compares it with each section of the provided course to see if there is any overlap.
+     *
+     * @param course - The course to check for overlapping sections.
+     * @returns `true` if there is an overlap between any sections of the two courses, otherwise `false`.
+     */
+    overlaps(course: Course): boolean {
+        return this.sections.some((section) => {
+            return course.sections.some((otherSection) => {
+                return section.overlaps(otherSection);
+            });
+        });
+    }
+
+    /**
      * Returns a string representation of the Course, including its name and sections.
      *
      * @returns A string that includes the course name and a summary of its sections.

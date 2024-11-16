@@ -57,6 +57,19 @@ class TimeSlot {
     }
 
     /**
+     * Determines if the current time slot overlaps with another time slot.
+     *
+     * @param timeSlot - The time slot to check for overlap with.
+     * @returns `true` if the time slots overlap, otherwise `false`.
+     */
+    overlaps(timeSlot: TimeSlot): boolean {
+        const hasOverlappingDates = this.startDate <= timeSlot.endDate && this.endDate >= timeSlot.startDate;
+        const hasOverlappingWeekdays = this.days.some(day => timeSlot.days.includes(day));
+        const isOverlappingTime = this.startTime.isBefore(timeSlot.endTime) && this.endTime.isAfter(timeSlot.startTime);
+        return hasOverlappingDates && hasOverlappingWeekdays && isOverlappingTime;
+    }
+
+    /**
      * Returns a string representation of the TimeSlot.
      *
      * @returns A formatted string that represents the time slot,

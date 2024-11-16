@@ -32,6 +32,23 @@ const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
         return `${hour}:00 ${period}`;
     });
 
+    /**
+     * Checks for conflicting courses in the given list of courses.
+     *
+     * Iterates through each course and checks if it overlaps with any other course in the list.
+     *
+     * @param courses - An array of course objects to be checked for conflicts.
+     * @returns An array of booleans where each element indicates whether the corresponding course has a conflict.
+     */
+    const conflicting = courses.map((course, index) => {
+        return courses.some((otherCourse, otherIndex) => {
+            if (index !== otherIndex) {
+                return course.overlaps(otherCourse);
+            }
+            return false;
+        });
+    });
+
     // Grid settings
     const slotsPerHour = 6;
     const minutesPerSlot = 60 / slotsPerHour;
@@ -75,7 +92,7 @@ const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
             })}
 
             {/* Course Events */}
-            {courses.flatMap((course) =>
+            {courses.map((course, index) =>
                 course.sections.flatMap((section) =>
                     section.timeSlots.flatMap((timeSlot) => {
                         const rowStart =
@@ -90,14 +107,17 @@ const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
 
                         return timeSlot.days.map((weekDay) => (
                             <div
-                                className={`event`}
+                                className={
+                                    "event" +
+                                    (conflicting[index] ? " conflicting" : "")
+                                }
                                 key={`${course.name}-${section.name}-${timeSlot.startTime}-${weekDay}`}
                                 style={{
                                     gridRow: `${rowStart} / span ${durationInSlots}`,
                                     gridColumn: weekDayToIndex(weekDay) + 2,
                                 }}
                             >
-                                {course.name}
+                                {course.name} {section.name}
                             </div>
                         ));
                     })

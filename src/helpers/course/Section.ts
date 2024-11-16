@@ -44,6 +44,20 @@ class Section {
     }
 
     /**
+     * Determines if the current section overlaps with another section.
+     * 
+     * @param section - The section to check for overlap with the current section.
+     * @returns `true` if there is an overlap between any time slots of the current section and the provided section, otherwise `false`.
+     */
+    overlaps(section: Section): boolean {
+        return this.timeSlots.some((timeSlot) => {
+            return section.timeSlots.some((otherTimeSlot) => {
+                return timeSlot.overlaps(otherTimeSlot);
+            })
+        })
+    }
+
+    /**
      * Returns a string representation of the Section.
      *
      * @returns A string that includes the section name and a summary of its time slots.

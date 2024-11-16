@@ -66,28 +66,36 @@ const App = () => {
 
     // Add course to the state
     const handleAddCourse = async () => {
+        const courseName = courseInput.toUpperCase();
         if (
             courseInput &&
-            !courses.some((course) => course.name === courseInput)
+            !courses.some((course) => course.name === courseName)
         ) {
             // Fetch the course data with the selected name
-            const [department, courseNumber] = courseInput.split(" ");
+            const [department, courseNumber] = courseName.split(" ");
             const loadedCourse = await loadCourse(
                 "2025",
                 "spring",
                 department,
                 courseNumber
             );
-            // Add course with its selected combination to the state
-            setLoadedCourses((prev) => [...prev, loadedCourse]);
-            setCourses((prev) => [...prev, loadedCourse.getCombination(0)]);
-            setCourseInput(""); // Clear input field after adding
+
+            if (loadedCourse) {
+                // Add course with its selected combination to the state
+                setLoadedCourses((prev) => [...prev, loadedCourse]);
+                setCourses((prev) => [...prev, loadedCourse.getCombination(0)]);
+                setCourseInput(""); // Clear input field after adding
+            } else {
+                alert("Error loading course!");
+            }
         }
     };
 
     return (
         <div className={styles.app}>
-            <h1>Courser (<i>Very Pre</i>-release)</h1>
+            <h1>
+                Courser (<i>Very Pre</i>-release)
+            </h1>
 
             {/* Course Input */}
             <input
@@ -98,7 +106,7 @@ const App = () => {
             />
             <button onClick={handleAddCourse}>Add Course</button>
 
-            {/* Combination Inputs for Each Course */}
+            {/* Inputs for Each Course */}
             {loadedCourses.map((course, index) => (
                 <div key={index} className={styles.courseRow}>
                     <label>
@@ -113,7 +121,12 @@ const App = () => {
                                 )
                             }
                             min="0"
-                            max={course.numCombinations()-1}
+                            max={course.numCombinations() - 1}
+                        />
+                        <input
+                            type="button"
+                            onChange={(e) => {}}
+                            value="remove"
                         />
                     </label>
                 </div>

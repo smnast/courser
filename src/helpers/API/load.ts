@@ -14,41 +14,46 @@ import dayjs from "dayjs";
  * @param term - The term for the course (e.g., "spring").
  * @param department - The department offering the course (e.g., "CMPT").
  * @param courseNumber - The course number (e.g., "120").
- * @returns A promise that resolves to a `Course` object containing the course name and its associated sections.
+ * @returns A promise that resolves to a `Course` object containing the course name and its associated sections, or null if an error occurs.
  */
 export const loadCourse = async (
     year: string,
     term: string,
     department: string,
     courseNumber: string
-): Promise<Course> => {
-    // Fetch course sections from the API
-    const response = await CourseAPI.getCourseSections(
-        year,
-        term,
-        department,
-        courseNumber
-    );
+): Promise<Course | null> => {
+    try {
+        // Fetch course sections from the API
+        const response = await CourseAPI.getCourseSections(
+            year,
+            term,
+            department,
+            courseNumber
+        );
 
-    // Construct the course name
-    const courseName = `${department} ${courseNumber}`;
+        // Construct the course name
+        const courseName = `${department} ${courseNumber}`;
 
-    // Use Promise.all to ensure all sections are loaded asynchronously before proceeding
-    const sections = await Promise.all(
-        response.map(async (section: CourseAPI.ApiResponse) => {
-            // Load each section
-            return loadSection(
-                year,
-                term,
-                department,
-                courseNumber,
-                section.text
-            );
-        })
-    );
+        // Use Promise.all to ensure all sections are loaded asynchronously before proceeding
+        const sections = await Promise.all(
+            response.map(async (section: CourseAPI.ApiResponse) => {
+                // Load each section
+                return loadSection(
+                    year,
+                    term,
+                    department,
+                    courseNumber,
+                    section.text
+                );
+            })
+        );
 
-    // Return a new Course object with the loaded sections
-    return new Course(courseName, sections);
+        // Return a new Course object with the loaded sections
+        return new Course(courseName, sections);
+    } catch (error) {
+        console.error("Failed to load course:", error);
+        return null;
+    }
 };
 
 /**
