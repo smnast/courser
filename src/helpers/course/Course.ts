@@ -55,7 +55,7 @@ class Course {
                                 section.associatedClass ===
                                 enrollmentSection.associatedClass;
                             const isOpen =
-                                section.associatedClass >=
+                                section.associatedClass >
                                 enrollmentSections.length;
                             return isType && (isAssociatedClass || isOpen);
                         })
@@ -82,6 +82,7 @@ class Course {
         for (const option of this.enrollmentOptions) {
             combinations += optionCombinations(option);
         }
+        console.log(this.enrollmentOptions);
         return combinations;
     }
 
