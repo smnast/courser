@@ -105,7 +105,7 @@ export const loadSection = async (
 
     // Load time slots asynchronously
     const timeSlots = await Promise.all(
-        sectionResponse.courseSchedule.map(
+        (sectionResponse.courseSchedule || []).map(
             (timeSlot: CourseAPI.ApiResponse) => {
                 return loadTimeSlot(timeSlot);
             }

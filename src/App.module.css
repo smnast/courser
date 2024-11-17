@@ -5,3 +5,8 @@
     align-items: center;
     gap: 10px;
 }
+
+.global-combination-buttons {
+    display: flex;
+    gap: 10px;
+}

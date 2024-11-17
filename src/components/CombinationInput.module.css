@@ -1,0 +1,9 @@
+.global-combination-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.global-combination-buttons input {
+    padding: 5px 10px;
+}

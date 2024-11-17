@@ -3,6 +3,14 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(timezone);
+dayjs.extend(utc);
+dayjs.extend(customParseFormat);
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
