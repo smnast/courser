@@ -11,7 +11,6 @@ const App = () => {
         loadedCourses,
         courses,
         combinationInputs,
-        hasConflicts,
         addCourse,
         removeCourse,
         handleCombinationChange,

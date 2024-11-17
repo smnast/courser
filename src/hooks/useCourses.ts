@@ -13,6 +13,8 @@ import Course from "@/helpers/course/Course";
  * @property {function(string): Promise<void>} addCourse - Function to add a course by its name.
  * @property {function(string): void} removeCourse - Function to remove a course by its name.
  * @property {function(Course, number): void} handleCombinationChange - Function to update the combination index for a course.
+ * @property {function(number): void} handleGlobalCombinationChange - Function to change the global combination by a specified direction.
+ * @property {function(Object): boolean} hasConflicts - Function to check if there are conflicts between course combinations.
  */
 export const useCourses = () => {
     const [loadedCourses, setLoadedCourses] = useState<Course[]>([]);
@@ -20,19 +22,6 @@ export const useCourses = () => {
     const [combinationInputs, setCombinationInputs] = useState<{
         [key: string]: number;
     }>({});
-
-    /**
-     * Checks if there are any conflicts between the courses.
-     *
-     * @returns {boolean} - Returns true if there are conflicts between courses, otherwise false.
-     */
-    const hasConflicts = (): boolean => {
-        return courses.some((course: Course, index: number) => {
-            return courses.some((otherCourse: Course, otherIndex: number) => {
-                return index !== otherIndex && course.overlaps(otherCourse);
-            });
-        });
-    };
 
     /**
      * Adds a course to the state by loading it and setting its default combination.
@@ -135,25 +124,36 @@ export const useCourses = () => {
      */
     const handleGlobalCombinationChange = (direction: number) => {
         setCombinationInputs((prev) => {
+            const prevJSON = JSON.stringify(prev);
             const updatedCombinations = { ...prev };
-            let shouldContinue = true;
-            for (
-                let i = loadedCourses.length - 1;
-                i >= 0 && shouldContinue;
-                i--
-            ) {
-                const course = loadedCourses[i];
-                let newCombinationIndex =
-                    updatedCombinations[course.name] + direction;
-                if (newCombinationIndex < 0) {
-                    newCombinationIndex = course.numCombinations() - 1;
-                } else if (newCombinationIndex >= course.numCombinations()) {
-                    newCombinationIndex = 0;
-                } else {
-                    shouldContinue = false;
+            do {
+                let shouldContinue = true;
+                for (
+                    let i = loadedCourses.length - 1;
+                    i >= 0 && shouldContinue;
+                    i--
+                ) {
+                    const course = loadedCourses[i];
+                    let newCombinationIndex =
+                        updatedCombinations[course.name] + direction;
+                    if (newCombinationIndex < 0) {
+                        newCombinationIndex = course.numCombinations() - 1;
+                    } else if (
+                        newCombinationIndex >= course.numCombinations()
+                    ) {
+                        newCombinationIndex = 0;
+                    } else {
+                        shouldContinue = false;
+                    }
+                    updatedCombinations[course.name] = newCombinationIndex;
                 }
-                updatedCombinations[course.name] = newCombinationIndex;
-            }
+            
+                const repeated = JSON.stringify(updatedCombinations) == prevJSON;
+                if (repeated) {
+                    break;
+                }
+            } while (hasConflicts(updatedCombinations));
+
             Object.keys(updatedCombinations).forEach((courseName) => {
                 updateCourseCombination(
                     courseName,
@@ -164,11 +164,31 @@ export const useCourses = () => {
         });
     };
 
+    /**
+     * Checks if there are any conflicts between the course combinations.
+     *
+     *
+     *
+     * @returns {boolean} - Returns true if there are conflicts between courses, otherwise false.
+     */
+    const hasConflicts = (combinations: { [key: string]: number }): boolean => {
+        const proposedCourses = loadedCourses.map((course: Course) =>
+            course.getCombination(combinations[course.name])
+        );
+
+        return proposedCourses.some((course: Course, index: number) => {
+            return proposedCourses.some(
+                (otherCourse: Course, otherIndex: number) => {
+                    return index !== otherIndex && course.overlaps(otherCourse);
+                }
+            );
+        });
+    };
+
     return {
         loadedCourses,
         courses,
         combinationInputs,
-        hasConflicts,
         addCourse,
         removeCourse,
         handleCombinationChange,

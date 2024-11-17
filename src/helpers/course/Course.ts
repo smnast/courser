@@ -82,7 +82,6 @@ class Course {
         for (const option of this.enrollmentOptions) {
             combinations += optionCombinations(option);
         }
-        console.log(this.enrollmentOptions);
         return combinations;
     }
 
