@@ -52,6 +52,8 @@ const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
     // Grid settings
     const slotsPerHour = 6;
     const minutesPerSlot = 60 / slotsPerHour;
+    const hourOffset = 1;
+    const headerOffset = 6;
 
     return (
         <div className="calendar">
@@ -65,14 +67,14 @@ const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
 
             {/* Hour Rows */}
             {hours.map((hour, rowIndex) => {
-                const rowStart = rowIndex * slotsPerHour + 2;
+                const rowStart = rowIndex * slotsPerHour + 1 + headerOffset;
                 return (
                     <React.Fragment key={hour}>
                         <div
                             className="hour-label"
                             style={{
                                 gridRow: `${rowStart} / span ${slotsPerHour}`,
-                                gridColumn: 1,
+                                gridColumn: hourOffset,
                             }}
                         >
                             {hour}
@@ -83,7 +85,7 @@ const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
                                 key={dayIndex}
                                 style={{
                                     gridRow: `${rowStart} / span ${slotsPerHour}`,
-                                    gridColumn: dayIndex + 2,
+                                    gridColumn: dayIndex + 1 + hourOffset,
                                 }}
                             />
                         ))}
@@ -98,7 +100,7 @@ const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
                         const rowStart =
                             timeSlot.startTime.hour() * slotsPerHour +
                             timeSlot.startTime.minute() / minutesPerSlot +
-                            2;
+                            1 + headerOffset;
                         const duration = timeSlot.endTime.diff(
                             timeSlot.startTime,
                             "minute"
@@ -114,7 +116,7 @@ const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
                                 key={`${course.name}-${section.name}-${timeSlot.startTime}-${weekDay}`}
                                 style={{
                                     gridRow: `${rowStart} / span ${durationInSlots}`,
-                                    gridColumn: weekDayToIndex(weekDay) + 2,
+                                    gridColumn: weekDayToIndex(weekDay) + 1 + hourOffset,
                                 }}
                             >
                                 {course.name} {section.name}

@@ -148,7 +148,7 @@ export const useCourses = () => {
                     updatedCombinations[course.name] = newCombinationIndex;
                 }
             
-                const repeated = JSON.stringify(updatedCombinations) == prevJSON;
+                const repeated = JSON.stringify(updatedCombinations) === prevJSON;
                 if (repeated) {
                     break;
                 }
