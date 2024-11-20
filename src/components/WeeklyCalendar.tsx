@@ -1,15 +1,18 @@
 import React from "react";
 import Course from "@/helpers/course/Course";
 import { weekDayToIndex } from "@/helpers/course/WeekDay";
+import { HSLColor } from "@/types/color";
 import "./WeeklyCalendar.css";
 
 /**
  * @interface WeeklyCalendarProps
  * @description Defines the props for the WeeklyCalendar component.
  * @property {Course[]} courses - The list of courses to display on the calendar.
+ * @property {{[key: string]: HSLColor}} courseColors - A mapping of course names to their assigned color.
  */
 interface WeeklyCalendarProps {
     courses: Course[];
+    courseColors: { [key: string]: HSLColor };
 }
 
 /**
@@ -18,7 +21,10 @@ interface WeeklyCalendarProps {
  * @param {WeeklyCalendarProps} props - The props passed to the component.
  * @returns {JSX.Element} The rendered JSX element for the weekly calendar.
  */
-const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
+const WeeklyCalendar = ({
+    courses,
+    courseColors,
+}: WeeklyCalendarProps): JSX.Element => {
     // Define the days of the week and the hours
     const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -100,7 +106,8 @@ const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
                         const rowStart =
                             timeSlot.startTime.hour() * slotsPerHour +
                             timeSlot.startTime.minute() / minutesPerSlot +
-                            1 + headerOffset;
+                            1 +
+                            headerOffset;
                         const duration = timeSlot.endTime.diff(
                             timeSlot.startTime,
                             "minute"
@@ -115,8 +122,12 @@ const WeeklyCalendar = ({ courses }: WeeklyCalendarProps): JSX.Element => {
                                 }
                                 key={`${course.name}-${section.name}-${timeSlot.startTime}-${weekDay}`}
                                 style={{
+                                    backgroundColor: courseColors[course.name],
                                     gridRow: `${rowStart} / span ${durationInSlots}`,
-                                    gridColumn: weekDayToIndex(weekDay) + 1 + hourOffset,
+                                    gridColumn:
+                                        weekDayToIndex(weekDay) +
+                                        1 +
+                                        hourOffset,
                                 }}
                             >
                                 {course.name} {section.name}

@@ -12,6 +12,7 @@ const App = () => {
         loadedCourses,
         courses,
         combinationInputs,
+        courseColors,
         addCourse,
         removeCourse,
         handleCombinationChange,
@@ -69,7 +70,7 @@ const App = () => {
 
                 <div className={styles["course-calendar"]}>
                     {/* Render the calendar with selected courses */}
-                    <WeeklyCalendar courses={courses} />
+                    <WeeklyCalendar courses={courses} courseColors={courseColors} />
                 </div>
             </div>
         </div>

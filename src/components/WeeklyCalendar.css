@@ -37,12 +37,11 @@
 }
 
 .event {
-    background-color: #4d4d4d;
     z-index: 1;
     padding: 5px;
     overflow: hidden;
 }
 
 .event.conflicting {
-    background-color: #dd3636;
+    border: 2px solid red;
 }

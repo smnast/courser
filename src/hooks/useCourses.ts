@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { loadCourse } from "@/helpers/API/load";
 import Course from "@/helpers/course/Course";
+import { HSLColor } from "@/types/color";
+import { generateCourseColor } from "@/helpers/colorUtils";
 
 /**
  * A custom hook to manage the state and operations related to courses, including
@@ -10,6 +12,7 @@ import Course from "@/helpers/course/Course";
  * @property {Course[]} loadedCourses - The list of all loaded course objects.
  * @property {Course[]} courses - The list of currently selected course combinations.
  * @property {Object} combinationInputs - A mapping of course names to their selected combination index.
+ * @property {Object} courseColors - A mapping of course names to their assigned color.
  * @property {function(string): Promise<void>} addCourse - Function to add a course by its name.
  * @property {function(string): void} removeCourse - Function to remove a course by its name.
  * @property {function(Course, number): void} handleCombinationChange - Function to update the combination index for a course.
@@ -21,6 +24,9 @@ export const useCourses = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [combinationInputs, setCombinationInputs] = useState<{
         [key: string]: number;
+    }>({});
+    const [courseColors, setCourseColors] = useState<{
+        [key: string]: HSLColor;
     }>({});
 
     /**
@@ -50,6 +56,10 @@ export const useCourses = () => {
                 ...prev,
                 [courseName]: 0,
             }));
+            setCourseColors((prev) => ({
+                ...prev,
+                [courseName]: generateCourseColor(),
+            }));
         } else {
             throw new Error("Error loading course!");
         }
@@ -71,6 +81,11 @@ export const useCourses = () => {
             const updatedCombinations = { ...prev };
             delete updatedCombinations[courseName];
             return updatedCombinations;
+        });
+        setCourseColors((prev) => {
+            const updatedColors = { ...prev };
+            delete updatedColors[courseName];
+            return updatedColors;
         });
     };
 
@@ -147,8 +162,9 @@ export const useCourses = () => {
                     }
                     updatedCombinations[course.name] = newCombinationIndex;
                 }
-            
-                const repeated = JSON.stringify(updatedCombinations) === prevJSON;
+
+                const repeated =
+                    JSON.stringify(updatedCombinations) === prevJSON;
                 if (repeated) {
                     break;
                 }
@@ -189,6 +205,7 @@ export const useCourses = () => {
         loadedCourses,
         courses,
         combinationInputs,
+        courseColors,
         addCourse,
         removeCourse,
         handleCombinationChange,
