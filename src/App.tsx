@@ -5,6 +5,7 @@ import CourseInput from "@/components/CourseInput";
 import CourseRow from "@/components/CourseRow";
 import CombinationInput from "@/components/CombinationInput";
 import { useCourses } from "@/hooks/useCourses";
+import TitleBar from "./components/TitleBar";
 
 const App = () => {
     const {
@@ -18,52 +19,58 @@ const App = () => {
     } = useCourses();
 
     return (
-        <div className={styles.app}>
-            <h1>
-                Courser (<i>Very Pre</i>-release)
-            </h1>
+        <div className={styles.layout}>
+            <TitleBar />
 
-            {/* Course input */}
-            <CourseInput
-                onAdd={async (courseName) => {
-                    try {
-                        await addCourse(courseName);
-                    } catch (error) {
-                        alert(
-                            error instanceof Error
-                                ? error.message
-                                : "An unknown error occurred"
-                        );
-                    }
-                }}
-            />
+            <div className={styles.app}>
+                <div className={styles["course-info"]}>
+                    <div className={styles["course-input"]}>
+                        {/* Course input */}
+                        <CourseInput
+                            onAdd={async (courseName) => {
+                                try {
+                                    await addCourse(courseName);
+                                } catch (error) {
+                                    alert(
+                                        error instanceof Error
+                                            ? error.message
+                                            : "An unknown error occurred"
+                                    );
+                                }
+                            }}
+                        />
+                    </div>
 
-            {/* Inputs for each Course */}
-            {loadedCourses.map((course, index) => (
-                <CourseRow
-                    key={index}
-                    course={course}
-                    combinationIndex={combinationInputs[course.name] || 0}
-                    onCombinationChange={(value) =>
-                        handleCombinationChange(course, value)
-                    }
-                    onRemove={() => removeCourse(course.name)}
-                />
-            ))}
+                    {/* Combination inputs for each Course */}
+                    {loadedCourses.map((course, index) => (
+                        <CourseRow
+                            key={index}
+                            course={course}
+                            combinationIndex={combinationInputs[course.name] || 0}
+                            onCombinationChange={(value) =>
+                                handleCombinationChange(course, value)
+                            }
+                            onRemove={() => removeCourse(course.name)}
+                        />
+                    ))}
 
-            <CombinationInput
-                onLeftClick={() => handleGlobalCombinationChange(-1)}
-                onRightClick={() => handleGlobalCombinationChange(1)}
-            />
+                    {/* Course list */}
+                    <div className={styles["course-list"]}>
+                        {courses.map((course, index) => (
+                            <div key={index}>{course.toString()}</div>
+                        ))}
+                    </div>
 
-            {/* Render the calendar with selected courses */}
-            <WeeklyCalendar courses={courses} />
+                    <CombinationInput
+                        onLeftClick={() => handleGlobalCombinationChange(-1)}
+                        onRightClick={() => handleGlobalCombinationChange(1)}
+                    />
+                </div>
 
-            {/* Course list */}
-            <div className={styles.courseList}>
-                {courses.map((course, index) => (
-                    <div key={index}>{course.toString()}</div>
-                ))}
+                <div className={styles["course-calendar"]}>
+                    {/* Render the calendar with selected courses */}
+                    <WeeklyCalendar courses={courses} />
+                </div>
             </div>
         </div>
     );

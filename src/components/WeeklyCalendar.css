@@ -6,6 +6,7 @@
     background-color: #494949;
     min-width: 0;
     min-height: 500px;
+    flex: 1;
 }
 
 .day-header {
