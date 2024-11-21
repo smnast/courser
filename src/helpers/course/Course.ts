@@ -37,6 +37,9 @@ class Course {
         const enrollmentSections = this.sections.filter(
             (section) => section.isEnrollment
         );
+        const classNumbers = enrollmentSections.map(
+            (section) => section.associatedClass
+        );
 
         this.enrollmentOptions = enrollmentSections.map(
             (enrollmentSection): EnrollmentOption => {
@@ -54,9 +57,9 @@ class Course {
                             const isAssociatedClass =
                                 section.associatedClass ===
                                 enrollmentSection.associatedClass;
-                            const isOpen =
-                                section.associatedClass >
-                                enrollmentSections.length;
+                            const isOpen = !classNumbers.includes(
+                                section.associatedClass
+                            );
                             return isType && (isAssociatedClass || isOpen);
                         })
                     );

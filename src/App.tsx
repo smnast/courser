@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./App.module.css";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
 import CourseInput from "@/components/CourseInput";
@@ -13,6 +13,7 @@ const App = () => {
         courses,
         combinationInputs,
         courseColors,
+        isLoadingCourse,
         addCourse,
         removeCourse,
         handleCombinationChange,
@@ -40,6 +41,7 @@ const App = () => {
                                 }
                             }}
                         />
+                        {isLoadingCourse && <div>Loading...</div>}
                     </div>
 
                     {/* Combination inputs for each Course */}
@@ -47,7 +49,9 @@ const App = () => {
                         <CourseRow
                             key={index}
                             course={course}
-                            combinationIndex={combinationInputs[course.name] || 0}
+                            combinationIndex={
+                                combinationInputs[course.name] || 0
+                            }
                             onCombinationChange={(value) =>
                                 handleCombinationChange(course, value)
                             }
@@ -70,7 +74,10 @@ const App = () => {
 
                 <div className={styles["course-calendar"]}>
                     {/* Render the calendar with selected courses */}
-                    <WeeklyCalendar courses={courses} courseColors={courseColors} />
+                    <WeeklyCalendar
+                        courses={courses}
+                        courseColors={courseColors}
+                    />
                 </div>
             </div>
         </div>

@@ -13,6 +13,7 @@ import { generateCourseColor } from "@/helpers/colorUtils";
  * @property {Course[]} courses - The list of currently selected course combinations.
  * @property {Object} combinationInputs - A mapping of course names to their selected combination index.
  * @property {Object} courseColors - A mapping of course names to their assigned color.
+ * @property {boolean} isLoadingCourse - A boolean indicating if a course is currently being loaded.
  * @property {function(string): Promise<void>} addCourse - Function to add a course by its name.
  * @property {function(string): void} removeCourse - Function to remove a course by its name.
  * @property {function(Course, number): void} handleCombinationChange - Function to update the combination index for a course.
@@ -28,6 +29,7 @@ export const useCourses = () => {
     const [courseColors, setCourseColors] = useState<{
         [key: string]: HSLColor;
     }>({});
+    const [isLoadingCourse, setIsLoadingCourse] = useState(false);
 
     /**
      * Adds a course to the state by loading it and setting its default combination.
@@ -36,6 +38,21 @@ export const useCourses = () => {
      * @throws {Error} Throws an error if the course cannot be loaded.
      */
     const addCourse = async (courseName: string) => {
+        // Check if a course is already being loaded
+        if (isLoadingCourse) {
+            throw new Error("A course is already being loaded!");
+        }
+
+        // Check if the course has already been added
+        const alreadyAdded = loadedCourses.some(
+            (prevCourse: Course) => prevCourse.name === courseName
+        );
+        if (alreadyAdded) {
+            throw new Error("Course already added!");
+        }
+
+        // Load the course
+        setIsLoadingCourse(true);
         const [department, courseNumber] = courseName.split(" ");
         const loadedCourse = await loadCourse(
             "2025",
@@ -43,13 +60,9 @@ export const useCourses = () => {
             department,
             courseNumber
         );
+        setIsLoadingCourse(false);
 
-        const alreadyAdded = loadedCourses.some(
-            (prevCourse: Course) => prevCourse.name === courseName
-        );
-        if (alreadyAdded) {
-            throw new Error("Course already added!");
-        } else if (loadedCourse) {
+        if (loadedCourse) {
             setLoadedCourses((prev) => [...prev, loadedCourse]);
             setCourses((prev) => [...prev, loadedCourse.getCombination(0)]);
             setCombinationInputs((prev) => ({
@@ -138,6 +151,7 @@ export const useCourses = () => {
      * @param direction - The direction by which the global combination should be changed (+1 or -1).
      */
     const handleGlobalCombinationChange = (direction: number) => {
+        console.log(direction);
         setCombinationInputs((prev) => {
             const prevJSON = JSON.stringify(prev);
             const updatedCombinations = { ...prev };
@@ -183,8 +197,7 @@ export const useCourses = () => {
     /**
      * Checks if there are any conflicts between the course combinations.
      *
-     *
-     *
+     * @param {Object} combinations - A mapping of course names to their selected combination index.
      * @returns {boolean} - Returns true if there are conflicts between courses, otherwise false.
      */
     const hasConflicts = (combinations: { [key: string]: number }): boolean => {
@@ -206,6 +219,7 @@ export const useCourses = () => {
         courses,
         combinationInputs,
         courseColors,
+        isLoadingCourse,
         addCourse,
         removeCourse,
         handleCombinationChange,

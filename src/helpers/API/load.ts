@@ -43,7 +43,8 @@ export const loadCourse = async (
                     term,
                     department,
                     courseNumber,
-                    section.text
+                    section.text,
+                    response
                 );
             })
         );
@@ -64,6 +65,7 @@ export const loadCourse = async (
  * @param department - The department offering the course (e.g., "CMPT").
  * @param courseNumber - The course number (e.g., "120").
  * @param sectionName - The section name (e.g., "A1").
+ * @param courseReponse - The course response data.
  * @returns A promise that resolves to a `Section` object containing details about the section, including its time slots.
  */
 export const loadSection = async (
@@ -71,7 +73,8 @@ export const loadSection = async (
     term: string,
     department: string,
     courseNumber: string,
-    sectionName: string
+    sectionName: string,
+    courseResponse: CourseAPI.ApiResponse
 ): Promise<Section> => {
     // Fetch section outline and course sections from the API
     const sectionResponse = await CourseAPI.getCourseOutline(
@@ -80,13 +83,6 @@ export const loadSection = async (
         department,
         courseNumber,
         sectionName
-    );
-
-    const courseResponse = await CourseAPI.getCourseSections(
-        year,
-        term,
-        department,
-        courseNumber
     );
 
     // Find the corresponding section details
