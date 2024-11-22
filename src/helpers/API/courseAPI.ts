@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 // Define the base URL
 const BASE_URL = "https://www.sfu.ca/bin/wcm/course-outlines";
@@ -34,11 +34,6 @@ const buildApiUrl = (
     return url;
 };
 
-interface YearData {
-    text: string;
-    value: string;
-}
-
 /**
  * Fetch the available years from the API.
  *
@@ -46,7 +41,7 @@ interface YearData {
  */
 export const getYears = async (): Promise<ApiResponse> => {
     try {
-        const response = await axios.get<YearData[]>(BASE_URL);
+        const response = await axiosGetWithRetries(BASE_URL);
         return response.data;
     } catch (error) {
         console.error("Error fetching years:", error);
@@ -63,7 +58,7 @@ export const getYears = async (): Promise<ApiResponse> => {
 export const getTerms = async (year: string): Promise<ApiResponse> => {
     try {
         const url = buildApiUrl(year);
-        const response = await axios.get(url);
+        const response = await axiosGetWithRetries(url);
         return response.data;
     } catch (error) {
         console.error(`Error fetching terms for year ${year}:`, error);
@@ -84,7 +79,7 @@ export const getDepartments = async (
 ): Promise<ApiResponse> => {
     try {
         const url = buildApiUrl(year, term);
-        const response = await axios.get(url);
+        const response = await axiosGetWithRetries(url);
         return response.data;
     } catch (error) {
         console.error(`Error fetching departments for ${year} ${term}:`, error);
@@ -107,7 +102,7 @@ export const getCourseNumbers = async (
 ): Promise<ApiResponse> => {
     try {
         const url = buildApiUrl(year, term, department);
-        const response = await axios.get(url);
+        const response = await axiosGetWithRetries(url);
         return response.data;
     } catch (error) {
         console.error(
@@ -135,7 +130,7 @@ export const getCourseSections = async (
 ): Promise<ApiResponse> => {
     try {
         const url = buildApiUrl(year, term, department, courseNumber);
-        const response = await axios.get(url);
+        const response = await axiosGetWithRetries(url);
         return response.data;
     } catch (error) {
         console.error(
@@ -171,7 +166,7 @@ export const getCourseOutline = async (
             courseNumber,
             courseSection
         );
-        const response = await axios.get(url);
+        const response = await axiosGetWithRetries(url);
         return response.data;
     } catch (error) {
         console.error(
@@ -180,4 +175,46 @@ export const getCourseOutline = async (
         );
         throw error;
     }
+};
+
+/**
+ * Makes an HTTP GET request to the specified URL with retry logic.
+ *
+ * This function attempts to fetch data from the given URL using axios. If the request fails
+ * due to a timeout, it will retry the request with exponential backoff and an increased timeout.
+ *
+ * @param url - The URL to send the GET request to.
+ * @param maxRetries - The maximum number of retry attempts (default is 5).
+ * @returns A promise that resolves to the API response data.
+ * @throws Will throw an error if all retry attempts fail or if a non-timeout error occurs.
+ */
+const axiosGetWithRetries = async (
+    url: string,
+    maxRetries: number = 5
+): Promise<ApiResponse> => {
+    const expBase = 2;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            // Set the timeout dynamically based on the exponential backoff logic
+            const timeout = Math.pow(expBase, attempt) * 1000; // 1, 2, 4, 8... seconds
+
+            // Make the request with the calculated timeout
+            const response = await axios.get(url, { timeout });
+            return response; // Success
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            if (axiosError.code === "ECONNABORTED") {
+                console.error("Timeout error:", axiosError.message);
+            } else if (axiosError.code) {
+                console.error(
+                    `Error on attempt #${attempt + 1}:`,
+                    axiosError.message
+                );
+                throw error;
+            }
+        }
+    }
+
+    throw new Error("Max attempts reached.");
 };
