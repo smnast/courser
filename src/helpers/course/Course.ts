@@ -47,10 +47,11 @@ class Course {
                     SectionType.Lecture,
                     SectionType.Lab,
                     SectionType.Tutorial,
+                    SectionType.Seminar,
                     SectionType.OpenLab,
                     SectionType.Online,
                 ];
-                const [lectures, labs, tutorials, openLabs, online] =
+                const [lectures, labs, tutorials, seminars, openLabs, online] =
                     sectionTypes.map((type) =>
                         this.sections.filter((section) => {
                             const isType = section.sectionType === type;
@@ -68,6 +69,7 @@ class Course {
                     lectures: lectures,
                     labs: labs,
                     tutorials: tutorials,
+                    seminars: seminars,
                     openLabs: openLabs,
                     online: online,
                 };
@@ -110,6 +112,7 @@ class Course {
                     option.lectures.length,
                     option.labs.length,
                     option.tutorials.length,
+                    option.seminars.length,
                     option.openLabs.length,
                     option.online.length,
                 ];
@@ -138,8 +141,9 @@ class Course {
                     option.lectures[indices[0] ?? 0] || null,
                     option.labs[indices[1] ?? 0] || null,
                     option.tutorials[indices[2] ?? 0] || null,
-                    option.openLabs[indices[3] ?? 0] || null,
-                    option.online[indices[4] ?? 0] || null,
+                    option.seminars[indices[3] ?? 0] || null,
+                    option.openLabs[indices[4] ?? 0] || null,
+                    option.online[indices[5] ?? 0] || null,
                 ];
 
                 // Remove null sections and return the Course object

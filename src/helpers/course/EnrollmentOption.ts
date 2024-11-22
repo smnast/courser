@@ -4,6 +4,7 @@ interface EnrollmentOption {
     lectures: Section[];
     labs: Section[];
     tutorials: Section[];
+    seminars: Section[];
     openLabs: Section[];
     online: Section[];
 }
@@ -20,6 +21,7 @@ export const optionCombinations = (enrollmentOption: EnrollmentOption, start: nu
         enrollmentOption.lectures.length,
         enrollmentOption.labs.length,
         enrollmentOption.tutorials.length,
+        enrollmentOption.seminars.length,
         enrollmentOption.openLabs.length,
         enrollmentOption.online.length,
     ];

@@ -2,6 +2,7 @@ enum SectionType {
     Lecture = "LEC",
     Lab = "LAB",
     Tutorial = "TUT",
+    Seminar = "SEM",
     OpenLab = "OPL",
     Online = "OLC",
 }
