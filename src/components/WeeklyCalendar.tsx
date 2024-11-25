@@ -103,12 +103,15 @@ const WeeklyCalendar = ({
             {courses.map((course, index) =>
                 course.sections.flatMap((section) =>
                     section.timeSlots.flatMap((timeSlot) => {
+                        // Skip this time slot if the time is undefined
+                        if (!timeSlot.isKnown()) return [];
+
                         const rowStart =
-                            timeSlot.startTime.hour() * slotsPerHour +
-                            timeSlot.startTime.minute() / minutesPerSlot +
+                            timeSlot.startTime!.hour() * slotsPerHour +
+                            timeSlot.startTime!.minute() / minutesPerSlot +
                             1 +
                             headerOffset;
-                        const duration = timeSlot.endTime.diff(
+                        const duration = timeSlot.endTime!.diff(
                             timeSlot.startTime,
                             "minute"
                         );

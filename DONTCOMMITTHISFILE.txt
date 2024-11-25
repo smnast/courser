@@ -1,0 +1,7 @@
+two main problems:
+    - make cool cards with the courses and their combinations and then add the global combination somewhere else
+        - so just redo some of it and make it pretty hehe wtf i see hehe
+    - and global combinations are so damn slow
+    - also, initial overlap is shit
+
+good luck bro you got this

@@ -1,0 +1,47 @@
+.course-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.course-box {
+    border-radius: 0.5rem;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.title:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.description {
+    background-color: white;
+    color: black;
+    border-radius: 0.2rem;
+    margin: 0.3rem;
+    padding: 0.3rem;
+}
+
+.time-slot {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.title-input {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.combination-input {
+    width: 3em;
+}
+
+.remove-button {
+    cursor: pointer;
+}

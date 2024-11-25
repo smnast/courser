@@ -6,6 +6,7 @@ import TimeSlot from "@/helpers/course/TimeSlot";
 import { stringToCampus } from "../course/Campus";
 import { stringToWeekDay } from "../course/WeekDay";
 import dayjs from "dayjs";
+import Instructor from "../course/Instructor";
 
 /**
  * Loads a course, including its sections, based on the provided year, term, department, and course number.
@@ -108,10 +109,20 @@ export const loadSection = async (
         )
     );
 
+    // Load instructors asynchronously
+    const instructors = await Promise.all(
+        (sectionResponse.instructor || []).map(
+            (instructor: CourseAPI.ApiResponse) => {
+                return loadInstructor(instructor);
+            }
+        )
+    );
+
     // Return a new Section object with the loaded details
     return new Section(
         sectionName,
         sectionType,
+        instructors,
         timeSlots,
         isEnrollment,
         associatedClass
@@ -122,11 +133,9 @@ export const loadSection = async (
  * Loads a time slot object from the API response, transforming the raw data into a `TimeSlot` object.
  *
  * @param timeSlotData - The raw API response data for a time slot.
- * @returns A promise that resolves to a `TimeSlot` object.
+ * @returns A `TimeSlot` object.
  */
-export const loadTimeSlot = async (
-    timeSlotData: CourseAPI.ApiResponse
-): Promise<TimeSlot> => {
+export const loadTimeSlot = async (timeSlotData: CourseAPI.ApiResponse): Promise<TimeSlot> => {
     // Convert campus, weekdays, and time fields into proper formats
     const campus = stringToCampus(timeSlotData.campus) || null;
     const weekDays = timeSlotData.days
@@ -134,8 +143,8 @@ export const loadTimeSlot = async (
               .split(", ")
               .map((day: string) => stringToWeekDay(day))
         : [];
-    const startTime = dayjs(timeSlotData.startTime, "H:mm");
-    const endTime = dayjs(timeSlotData.endTime, "H:mm");
+    const startTime = timeSlotData.startTime ? dayjs(timeSlotData.startTime, "H:mm") : null;
+    const endTime = timeSlotData.endTime ? dayjs(timeSlotData.endTime, "H:mm") : null;
     const startDate = new Date(timeSlotData.startDate);
     const endDate = new Date(timeSlotData.endDate);
     const isExam = timeSlotData.isExam;
@@ -150,6 +159,18 @@ export const loadTimeSlot = async (
         endDate,
         isExam
     );
+};
+
+/**
+ * Loads an instructor based on the provided instructor data.
+ *
+ * @param instructorData - The API response containing instructor information.
+ * @returns The corresponding Instructor object.
+ */
+const loadInstructor = (instructorData: CourseAPI.ApiResponse): Instructor => {
+    const name = instructorData.name;
+    const instructor = Instructor.getInstructor(name);
+    return instructor;
 };
 
 /**

@@ -127,19 +127,25 @@ export const useCourses = () => {
     /**
      * Handles changes to the combination index for a specific course.
      *
-     * @param {Course} course - The course for which the combination is being changed.
+     * @param {string} courseName - The name of the course for which the combination is being changed.
      * @param {number} value - The new combination index value.
      */
-    const handleCombinationChange = (course: Course, value: number) => {
+    const handleCombinationChange = (courseName: string, value: number) => {
+        // Find the loaded course with the same name
+        const loadedCourse = loadedCourses.find((c) => c.name === courseName);
+        if (!loadedCourse) {
+            throw new Error(`Course ${courseName} not found!`);
+        }
+
         if (value < 0) value = 0;
-        else if (value >= course.numCombinations())
-            value = course.numCombinations() - 1;
+        else if (value >= loadedCourse.numCombinations())
+            value = loadedCourse.numCombinations() - 1;
 
         setCombinationInputs((prev) => {
-            const updatedCombinations = { ...prev, [course.name]: value };
+            const updatedCombinations = { ...prev, [courseName]: value };
             updateCourseCombination(
-                course.name,
-                updatedCombinations[course.name]
+                courseName,
+                updatedCombinations[courseName]
             );
             return updatedCombinations;
         });
@@ -151,7 +157,6 @@ export const useCourses = () => {
      * @param direction - The direction by which the global combination should be changed (+1 or -1).
      */
     const handleGlobalCombinationChange = (direction: number) => {
-        console.log(direction);
         setCombinationInputs((prev) => {
             const prevJSON = JSON.stringify(prev);
             const updatedCombinations = { ...prev };
@@ -215,7 +220,6 @@ export const useCourses = () => {
     };
 
     return {
-        loadedCourses,
         courses,
         combinationInputs,
         courseColors,

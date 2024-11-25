@@ -7,6 +7,7 @@
     min-width: 0;
     min-height: 500px;
     flex: 1;
+    width: 100%
 }
 
 .day-header {
@@ -39,6 +40,7 @@
 .event {
     z-index: 1;
     padding: 5px;
+    font-size: 0.9em;
     overflow: hidden;
 }
 

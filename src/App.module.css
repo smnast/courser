@@ -10,12 +10,13 @@
     grid-template-columns: 1fr 1fr;
     flex: 1;
     min-height: 0;
+    gap: 1rem;
 }
 
 .course-info {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 1rem;
 }
 
 .course-input {
@@ -24,5 +25,8 @@
 
 .course-calendar {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
     overflow-y: scroll;
 }

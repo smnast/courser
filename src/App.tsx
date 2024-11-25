@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./App.module.css";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
 import CourseInput from "@/components/CourseInput";
-import CourseRow from "@/components/CourseRow";
+import CourseInfo from "@/components/CourseInfo";
 import CombinationInput from "@/components/CombinationInput";
 import { useCourses } from "@/hooks/useCourses";
 import TitleBar from "./components/TitleBar";
 
 const App = () => {
     const {
-        loadedCourses,
         courses,
         combinationInputs,
         courseColors,
@@ -44,35 +43,21 @@ const App = () => {
                         {isLoadingCourse && <div>Loading...</div>}
                     </div>
 
-                    {/* Combination inputs for each Course */}
-                    {loadedCourses.map((course, index) => (
-                        <CourseRow
-                            key={index}
-                            course={course}
-                            combinationIndex={
-                                combinationInputs[course.name] || 0
-                            }
-                            onCombinationChange={(value) =>
-                                handleCombinationChange(course, value)
-                            }
-                            onRemove={() => removeCourse(course.name)}
-                        />
-                    ))}
-
-                    {/* Course list */}
-                    <div className={styles["course-list"]}>
-                        {courses.map((course, index) => (
-                            <div key={index}>{course.toString()}</div>
-                        ))}
-                    </div>
-
-                    <CombinationInput
-                        onLeftClick={() => handleGlobalCombinationChange(-1)}
-                        onRightClick={() => handleGlobalCombinationChange(1)}
+                    <CourseInfo
+                        courses={courses}
+                        courseColors={courseColors}
+                        combinationInputs={combinationInputs}
+                        removeCourse={removeCourse}
+                        handleCombinationChange={handleCombinationChange}
                     />
                 </div>
 
                 <div className={styles["course-calendar"]}>
+                    <CombinationInput
+                        onLeftClick={() => handleGlobalCombinationChange(-1)}
+                        onRightClick={() => handleGlobalCombinationChange(1)}
+                    />
+
                     {/* Render the calendar with selected courses */}
                     <WeeklyCalendar
                         courses={courses}

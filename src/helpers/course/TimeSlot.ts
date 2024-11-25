@@ -1,5 +1,5 @@
 import Campus from "@/helpers/course/Campus";
-import WeekDay from "@/helpers/course/WeekDay";
+import WeekDay, { weekDayToPrettyString } from "@/helpers/course/WeekDay";
 import { Dayjs } from "dayjs";
 
 /**
@@ -13,10 +13,10 @@ class TimeSlot {
     days: WeekDay[];
 
     /** The start time of the time slot */
-    startTime: Dayjs;
+    startTime: Dayjs | null;
 
     /** The end time of the time slot */
-    endTime: Dayjs;
+    endTime: Dayjs | null;
 
     /** The start date of the time slot */
     startDate: Date;
@@ -41,8 +41,8 @@ class TimeSlot {
     constructor(
         campus: Campus | null,
         days: WeekDay[] = [],
-        startTime: Dayjs,
-        endTime: Dayjs,
+        startTime: Dayjs | null,
+        endTime: Dayjs | null,
         startDate: Date,
         endDate: Date,
         isExam: boolean
@@ -63,10 +63,62 @@ class TimeSlot {
      * @returns `true` if the time slots overlap, otherwise `false`.
      */
     overlaps(timeSlot: TimeSlot): boolean {
-        const hasOverlappingDates = this.startDate <= timeSlot.endDate && this.endDate >= timeSlot.startDate;
-        const hasOverlappingWeekdays = this.days.some(day => timeSlot.days.includes(day));
-        const isOverlappingTime = this.startTime.isBefore(timeSlot.endTime) && this.endTime.isAfter(timeSlot.startTime);
-        return hasOverlappingDates && hasOverlappingWeekdays && isOverlappingTime;
+        // If the time slot is not defined, then it cannot overlap
+        if (!this.startTime || !this.endTime) return false;
+
+        // Check that all properties overlap
+        const hasOverlappingDates =
+            this.startDate <= timeSlot.endDate &&
+            this.endDate >= timeSlot.startDate;
+        const hasOverlappingWeekdays = this.days.some((day) =>
+            timeSlot.days.includes(day)
+        );
+        const isOverlappingTime =
+            this.startTime.isBefore(timeSlot.endTime) &&
+            this.endTime.isAfter(timeSlot.startTime);
+        return (
+            hasOverlappingDates && hasOverlappingWeekdays && isOverlappingTime
+        );
+    }
+
+    /**
+     * Checks if the time slot has both a start time and an end time defined.
+     *
+     * @returns {boolean} True if both startTime and endTime are valid objects, otherwise false.
+     */
+    isKnown(): boolean {
+        return this.startTime !== null && this.endTime !== null;
+    }
+
+    /**
+     * Returns a string representation of the days.
+     *
+     * @returns {string} A comma-separated string of days if available, otherwise "Unknown days".
+     */
+    getDaysString(): string {
+        if (this.days.length === 0) {
+            return "Unknown days";
+        }
+        return this.days
+            .map((day: WeekDay) => {
+                return weekDayToPrettyString(day);
+            })
+            .join(", ");
+    }
+
+    /**
+     * Returns a formatted string representing the time slot.
+     * If both `startTime` and `endTime` are defined, the format will be "HH:mm - HH:mm".
+     * If either `startTime` or `endTime` is not defined, it returns "Unknown".
+     *
+     * @returns {string} The formatted time slot string or "Unknown" if times are not defined.
+     */
+    getTimesString(): string {
+        return this.isKnown()
+            ? `${this.startTime!.format("HH:mm")} - ${this.endTime!.format(
+                  "HH:mm"
+              )}`
+            : "Unknown time";
     }
 
     /**
@@ -76,9 +128,7 @@ class TimeSlot {
      * including the campus, days, and start and end times.
      */
     toString(): string {
-        return `${this.campus} ${this.days.join(
-            ", "
-        )} ${this.startTime.format('HH:mm')} - ${this.endTime.format('HH:mm')}`;
+        return `${this.campus} ${this.days.join(", ")}` + this.getTimesString();
     }
 }
 

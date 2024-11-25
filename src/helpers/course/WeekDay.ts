@@ -8,6 +8,16 @@ enum WeekDay {
     Saturday = "Sa",
 }
 
+const fullWeekDayNames: { [key in WeekDay]: string } = {
+    [WeekDay.Sunday]: "Sunday",
+    [WeekDay.Monday]: "Monday",
+    [WeekDay.Tuesday]: "Tuesday",
+    [WeekDay.Wednesday]: "Wednesday",
+    [WeekDay.Thursday]: "Thursday",
+    [WeekDay.Friday]: "Friday",
+    [WeekDay.Saturday]: "Saturday",
+};
+
 /**
  * Converts a string to a WeekDay enum value.
  *
@@ -29,6 +39,16 @@ export function stringToWeekDay(weekDay: string): WeekDay | undefined {
  */
 export function weekDayToIndex(weekDay: WeekDay): number {
     return Object.values(WeekDay).indexOf(weekDay);
+}
+
+/**
+ * Converts a `WeekDay` enum value to its corresponding pretty string representation.
+ *
+ * @param weekDay - The `WeekDay` enum value to convert.
+ * @returns The pretty string representation of the given `WeekDay`.
+ */
+export function weekDayToPrettyString(weekDay: WeekDay): string {
+    return fullWeekDayNames[weekDay];
 }
 
 export default WeekDay;

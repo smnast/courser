@@ -7,6 +7,15 @@ enum SectionType {
     Online = "OLC",
 }
 
+const fullSectionTypeNames: { [key in SectionType]: string } = {
+    [SectionType.Lecture]: "Lecture",
+    [SectionType.Lab]: "Lab",
+    [SectionType.Tutorial]: "Tutorial",
+    [SectionType.Seminar]: "Seminar",
+    [SectionType.OpenLab]: "Open Lab",
+    [SectionType.Online]: "Online",
+};
+
 /**
  * Converts a string to a SectionType if it matches one of the SectionType values.
  *
@@ -20,6 +29,16 @@ export function stringToSectionType(
         return sectionType as SectionType;
     }
     return undefined;
+}
+
+/**
+ * Converts a SectionType enum value to its corresponding pretty string representation.
+ *
+ * @param sectionType - The SectionType enum value to convert.
+ * @returns The pretty string representation of the given SectionType.
+ */
+export function sectionTypeToPrettyString(sectionType: SectionType): string {
+    return fullSectionTypeNames[sectionType];
 }
 
 export default SectionType;

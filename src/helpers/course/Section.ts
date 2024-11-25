@@ -1,5 +1,6 @@
 import TimeSlot from "@/helpers/course/TimeSlot";
-import SectionType from "@/helpers/course/SectionType";
+import SectionType, { sectionTypeToPrettyString } from "@/helpers/course/SectionType";
+import Instructor from "./Instructor";
 
 /**
  * Represents a section of a course.
@@ -12,12 +13,15 @@ class Section {
     sectionType: SectionType;
 
     /** The time slots assigned to this section */
-    timeSlots: Array<TimeSlot>;
+    timeSlots: TimeSlot[];
+
+    /** An array of Instructor objects associated with the course section */
+    instructors: Instructor[];
 
     /** Whether the course is an enrollment type (or non-enrollment) */
     isEnrollment: boolean;
 
-    /** The associated enrollment section index for this class */
+    /** The associatd enrollment section index for this class */
     associatedClass: number;
 
     /**
@@ -32,20 +36,22 @@ class Section {
     constructor(
         name: string,
         sectionType: SectionType,
-        timeSlots: Array<TimeSlot>,
+        instructors: Instructor[],
+        timeSlots: TimeSlot[],
         isEnrollment: boolean,
         associatedClass: number
     ) {
         this.name = name;
         this.sectionType = sectionType;
         this.timeSlots = timeSlots;
+        this.instructors = instructors;
         this.isEnrollment = isEnrollment;
         this.associatedClass = associatedClass;
     }
 
     /**
      * Determines if the current section overlaps with another section.
-     * 
+     *
      * @param section - The section to check for overlap with the current section.
      * @returns `true` if there is an overlap between any time slots of the current section and the provided section, otherwise `false`.
      */
@@ -53,8 +59,26 @@ class Section {
         return this.timeSlots.some((timeSlot) => {
             return section.timeSlots.some((otherTimeSlot) => {
                 return timeSlot.overlaps(otherTimeSlot);
-            })
-        })
+            });
+        });
+    }
+
+    /**
+     * Returns a string representation of the instructors.
+     * 
+     * @returns {string} A comma-separated string of instructor names.
+     */
+    getInstructorString(): string {
+        return this.instructors.join(", ");
+    }
+
+    /**
+     * Generates a formatted string representing the section name.
+     *
+     * @returns {string} A string combining the pretty-printed section type and the section name.
+     */
+    getNameString(): string {
+        return `${sectionTypeToPrettyString(this.sectionType)}: ${this.name}`
     }
 
     /**
@@ -66,7 +90,9 @@ class Section {
         const timeSlotSummary = this.timeSlots
             .map((ts) => ts.toString())
             .join(", ");
-        return `${this.name} (${this.sectionType}): ${timeSlotSummary}`;
+        return `${this.name} with ${this.instructors} (${
+            this.sectionType
+        }): ${timeSlotSummary}`;
     }
 }
 
