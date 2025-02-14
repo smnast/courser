@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Class, Section, ScheduleItem } from 'course';
 
 const base_url = 'http://www.sfu.ca/bin/wcm/course-outlines';
 
@@ -16,7 +17,7 @@ export const fetchData = async (inputs: string[] = [], retries: number = 3, maxT
             console.log('Timeout reached.');
             if (retries >= 0) {
                 console.log('Retrying...');
-                return fetchData(url, retries - 1, maxTime * 2);
+                return fetchData(inputs, retries - 1, maxTime * 2);
             } else {
                 console.log('Max retries reached.');
             }
@@ -51,17 +52,22 @@ export const fetchSectionData = async (year: string, term: string, department: s
     return fetchData([year, term, department, course, section]);
 };
 
-export const fetchInstructors = async (year: string, term: string, department: string, course: string, section: string) => {
+export const fetchSectionSchedule = async (year: string, term: string, department: string, course: string, section: string) => {
     return fetchSectionData(year, term, department, course, section).then(data => {
-        return data.instructor.map(instructor => {
-            return instructor.name;
-        })
+        return data.courseSchedule;
     });
 };
 
-export const fetchCourseName = async(year: string, term: string, department: string, course: string, section: string) => {
+export const fetchInstructors = async (year: string, term: string, department: string, course: string, section: string) => {
     return fetchSectionData(year, term, department, course, section).then(data => {
+        return data.instructor?.map(instructor => {
+            return instructor.name;
+        }) ?? [];
+    });
+};
+
+export const fetchCourseName = async (year: string, term: string, department: string, course: string) => {
+    return fetchSectionData(year, term, department, course).then(data => {
         return data.title;
     })
 };
-
